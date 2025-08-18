@@ -65,6 +65,10 @@ MIDDLEWARE = [
     'fitnessapp.views.jwt_cookie_auth_middleware'
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://whale-app-j62ue.ondigitalocean.app"
+]
+
 ROOT_URLCONF = 'fitnesssite.urls'
 
 TEMPLATES = [
