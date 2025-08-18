@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Графік спалених калорій</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+<div class="container my-4">
+  <h1 class="text-center">Графік спалених калорій</h1>
+
+  <div class="my-3">
+    <form method="get" action="" class="d-flex flex-wrap gap-3 align-items-center">
+      <label for="start_date" class="form-label">Початкова дата:</label>
+      <input type="date" id="start_date" name="start_date" class="form-control w-auto" value="{{ start_date }}">
+
+      <label for="end_date" class="form-label">Кінцева дата:</label>
+      <input type="date" id="end_date" name="end_date" class="form-control w-auto" value="{{ end_date }}">
+
+      <label for="user" class="form-label">Користувач:</label>
+      <select name="user" id="user" class="form-select w-auto">
+        <option value="">Всі користувачі</option>
+        {% for user in users %}
+        <option value="{{ user.id }}" {% if user.id|stringformat:"s" == selected_user %}selected{% endif %}>
+        {{ user.username }}
+        </option>
+        {% endfor %}
+      </select>
+      <button type="submit" class="btn btn-primary">Застосувати</button>
+    </form>
+  </div>
+
+  <div class="my-3">
+    <h3>Статистичні показники:</h3>
+    {% if stats %}
+    <ul>
+      <li><strong>Середнє: </strong>{{ stats.mean }}</li>
+      <li><strong>Медіана: </strong>{{ stats.median }}</li>
+      <li><strong>Мінімум: </strong>{{ stats.min }}</li>
+      <li><strong>Максимум: </strong>{{ stats.max }}</li>
+    </ul>
+    {% else %}
+    <p>Не вдалося обчислити статистику.</p>
+    {% endif %}
+  </div>
+
+  <div class="my-3">
+    <h3>Графік:</h3>
+    <div id="plotly-chart"></div>
+    <script>
+      const graphData = {{ chart|safe }};
+      if (graphData) {
+        Plotly.newPlot('plotly-chart', graphData.data, graphData.layout);
+      } else {
+        document.getElementById('plotly-chart').innerHTML = "<p>Дані для графіка відсутні.</p>";
+      }
+    </script>
+  </div>
+
+  <div class="my-3">
+    <h3>Таблиця даних:</h3>
+    {% if data_table %}
+    <table class="table table-bordered">
+      <thead class="table-dark">
+      <tr>
+        <th>Дата</th>
+        <th>Калорії</th>
+        <th>Користувач</th>
+      </tr>
+      </thead>
+      <tbody>
+      {% for row in data_table %}
+      <tr>
+        <td>{{ row.day }}</td>
+        <td>{{ row.total_calories_burned }}</td>
+        <td>{{ row.user__username }}</td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p>Дані для таблиці відсутні.</p>
+    {% endif %}
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

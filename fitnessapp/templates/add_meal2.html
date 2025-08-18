@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Додати прийом їжі</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<nav class="navbar navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Фітнес Дашборд</a>
+        <div class="d-flex align-items-center">
+            {% if user.is_authenticated %}
+            <a href="{% url 'edit_profile' %}" class="text-white me-3">{{ user.username }}</a>
+            <form action="{% url 'logout' %}" method="post" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-light btn-sm">Вийти</button>
+            </form>
+            {% else %}
+            <a href="{% url 'login' %}" class="btn btn-outline-light btn-sm me-2">Увійти</a>
+            <a href="{% url 'register' %}" class="btn btn-light btn-sm">Реєстрація</a>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid mt-3">
+    <div class="row">
+        <!-- Ліва панель навігації -->
+        <aside class="col-md-3">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <h5>Меню</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'home' %}" class="list-group-item list-group-item-action">На головну</a>
+                    <a href="{% url 'add_meal' %}" class="list-group-item list-group-item-action">Додати прийом їжі</a>
+                    <a href="{% url 'add_sleep' %}" class="list-group-item list-group-item-action">Додати сон</a>
+                    <a href="{% url 'add_workout' %}" class="list-group-item list-group-item-action">Додати тренування</a>
+                    <a href="{% url 'add_water' %}" class="list-group-item list-group-item-action">Додати прийом води</a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Основний контент -->
+        <main class="col-md-9">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <h5>Додати прийом їжі</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{% url 'add_meal' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="meal_type" class="form-label">Тип їжі</label>
+                            <div class="input-group">
+                                <select class="form-select" name="meal_type" id="meal_type" required>
+                                    {% for meal in meal_types %}
+                                    <option value="{{ meal.meal_type_id }}">
+                                        {{ meal.food_name }} ({{ meal.calories_per_100_g }} ккал/100г)
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                                <a href="{% url 'add_meal_type' %}" class="btn btn-outline-secondary">Додати новий тип страви</a>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="quantity_in_g" class="form-label">Кількість (г)</label>
+                            <input type="number" class="form-control" name="quantity_in_g" id="quantity_in_g" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="meal_date" class="form-label">Дата споживання їжі</label>
+                            <input type="datetime-local" class="form-control" name="meal_date" id="meal_date">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Додати</button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Графік розсіювання: Тривалість тренування та Спалені калорії</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+<div class="container my-4">
+    <h1 class="text-center">Графік розсіювання: Тривалість тренування та Спалені калорії</h1>
+
+    <div class="my-3">
+        <form method="get" action="" class="d-flex flex-wrap gap-3 align-items-center">
+            <label for="start_date" class="form-label">Початкова дата:</label>
+            <input type="date" id="start_date" name="start_date" class="form-control w-auto" value="{{ start_date }}">
+
+            <label for="end_date" class="form-label">Кінцева дата:</label>
+            <input type="date" id="end_date" name="end_date" class="form-control w-auto" value="{{ end_date }}">
+
+            <label for="user" class="form-label">Виберіть користувача:</label>
+            <select name="user" id="user" class="form-select w-auto">
+                <option value="">Всі користувачі</option>
+                {% for user in users %}
+                <option value="{{ user.id }}" {% if user.id|stringformat:"s" == selected_user %}selected{% endif %}>
+                {{ user.username }}
+                </option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary">Застосувати</button>
+        </form>
+    </div>
+
+    <div class="my-3">
+        <h3>Статистичні показники:</h3>
+        <ul>
+            <li><strong>Тривалість тренування:</strong></li>
+            <ul>
+                <li>Середнє: {{ statistics.duration_mean }}</li>
+                <li>Медіана: {{ statistics.duration_median }}</li>
+                <li>Мінімум: {{ statistics.duration_min }}</li>
+                <li>Максимум: {{ statistics.duration_max }}</li>
+            </ul>
+            <li><strong>Спалені калорії:</strong></li>
+            <ul>
+                <li>Середнє: {{ statistics.burned_calories_mean }}</li>
+                <li>Медіана: {{ statistics.burned_calories_median }}</li>
+                <li>Мінімум: {{ statistics.burned_calories_min }}</li>
+                <li>Максимум: {{ statistics.burned_calories_max }}</li>
+            </ul>
+        </ul>
+    </div>
+
+    <div class="my-3">
+        <h3>Графік:</h3>
+        <div id="plotly-chart"></div>
+        <script>
+            const graphData = {{ chart|safe }};
+            if (graphData) {
+                Plotly.newPlot('plotly-chart', graphData.data, graphData.layout);
+            } else {
+                document.getElementById('plotly-chart').innerHTML = "<p>Дані для графіка відсутні.</p>";
+            }
+        </script>
+    </div>
+
+    <div class="my-3">
+        <h3>Таблиця даних:</h3>
+        {% if data_table %}
+        <table class="table table-bordered">
+            <thead class="table-dark">
+            <tr>
+                <th>Дата</th>
+                <th>Користувач</th>
+                <th>Тривалість тренування (години)</th>
+                <th>Спалені калорії</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for row in data_table %}
+            <tr>
+                <td>{{ row.workout_time_begin }}</td>
+                <td>{{ row.user__username }}</td>
+                <td>{{ row.duration }}</td>
+                <td>{{ row.burned_calories }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>Дані відсутні.</p>
+        {% endif %}
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

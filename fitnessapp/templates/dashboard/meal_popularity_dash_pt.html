@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Популярність страв</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+<div class="container my-4">
+    <h1 class="text-center">Аналіз популярності страв</h1>
+    
+    <div class="my-3">
+        <form method="get" action="{% url 'meal_analysis2' %}" class="d-flex align-items-center gap-3">
+            <label for="user" class="form-label">Виберіть користувача:</label>
+            <select name="user" id="user" class="form-select w-auto">
+                <option value="">Всі користувачі</option>
+                {% for user in users %}
+                <option value="{{ user.id }}" {% if user.id|stringformat:"s" == selected_user %}selected{% endif %}>
+                {{ user.username }}
+                </option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary">Застосувати</button>
+        </form>
+    </div>
+    
+    <div class="my-3">
+        <h3>Статистика:</h3>
+        {% if min_val is not None %}
+        <ul>
+            <li>Мінімум: {{ min_val }}</li>
+            <li>Максимум: {{ max_val }}</li>
+            <li>Середнє: {{ avg_val }}</li>
+            <li>Медіана: {{ median_val }}</li>
+        </ul>
+        {% else %}
+        <p>Статистика недоступна.</p>
+        {% endif %}
+    </div>
+
+    
+    <div class="my-3">
+        <h3>Графік популярності страв:</h3>
+        <div id="plotly-chart"></div>
+        <script>
+            const graphData = {{ chart|safe }};
+            Plotly.newPlot('plotly-chart', graphData.data, graphData.layout);
+        </script>
+    </div>
+    
+    <div class="my-3">
+        <h3>Таблиця даних:</h3>
+        {% if data_table %}
+        <table class="table table-bordered">
+            <thead class="table-dark">
+            <tr>
+                <th>Користувач</th>
+                <th>Страва</th>
+                <th>Кількість замовлень</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for row in data_table %}
+            <tr>
+                <td>{{ row.user__username }}</td>
+                <td>{{ row.meal_type__food_name }}</td>
+                <td>{{ row.total_orders }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>Таблиця даних порожня.</p>
+        {% endif %}
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
