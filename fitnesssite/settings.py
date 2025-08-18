@@ -35,7 +35,8 @@ SECRET_KEY = 'django-insecure-8--5u6=l8z=j28^a%)5t$1=$^7yv(wvydr1&p$+9-=huwv0q!c
 DEBUG = True
 
 ALLOWED_HOSTS = ['192.168.1.103',
-                 '127.0.0.1']
+                 '127.0.0.1',
+                 'whale-app-j62ue.ondigitalocean.app']
 
 
 # Application definition
