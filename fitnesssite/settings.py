@@ -97,12 +97,13 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'fitness_app_new',
-        'USER': 'diana',
+        'USER': 'root',
         'PASSWORD': 'Vita2172s14D10',
-        'HOST': 'djangoserver.mysql.database.azure.com',
+        'HOST': 'localhost',
         'PORT': '3306',
-        'OPTIONS': {
-            'ssl': {'disable': True},
+        'TEST': {
+            'NAME': 'test_fitness_app_new',
+            'MIRROR': 'default',
         },
     }
 }
